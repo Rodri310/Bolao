@@ -1,0 +1,770 @@
+/* =====================================================
+   BOLÃO COPA DO MUNDO 2026 — Premium Dark Theme
+   Poppins via Google Fonts
+   ===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.2/css/flag-icons.min.css');
+
+/* ---------- Design Tokens ---------- */
+:root {
+  --bg:          #1c2527; /* Deep Slate Green */
+  --bg-2:        #273338; /* Medium Slate Green */
+  --bg-card:     rgba(43, 87, 72, 0.15); /* Dark Green translucent */
+  --bg-card-hover: rgba(43, 87, 72, 0.25);
+  --border:      rgba(97, 135, 100, 0.2); /* Sage green border */
+  --border-gold: rgba(156, 176, 128, 0.35); /* Light olive border */
+
+  --gold:        #9cb080; /* Light Olive Green (Accent) */
+  --gold-light:  #b8cba0;
+  --gold-dim:    rgba(156, 176, 128, 0.08);
+
+  --text:        #eef2ec; /* Soft Off-White */
+  --text-2:      #a4b8a6; /* Soft Grayish Sage */
+  --text-3:      #5b705e;
+
+  --green:       #84a98c; /* Olive Green (Win) */
+  --green-bg:    rgba(132, 169, 140, 0.14);
+  --green-bd:    rgba(132, 169, 140, 0.35);
+
+  --amber:       #d2a16d; /* Soft Amber (Draw) */
+  --amber-bg:    rgba(210, 161, 109, 0.14);
+  --amber-bd:    rgba(210, 161, 109, 0.35);
+
+  --red:         #c37979; /* Muted Brick Red (Loss) */
+  --red-bg:      rgba(195, 121, 121, 0.14);
+  --red-bd:      rgba(195, 121, 121, 0.35);
+
+  --gray:        #687d82; /* Muted Slate Gray (Pending) */
+  --gray-bg:     rgba(104, 125, 130, 0.14);
+  --gray-bd:     rgba(104, 125, 130, 0.35);
+
+  --radius:      16px;
+  --radius-sm:   10px;
+  --radius-xs:   6px;
+  --shadow:      0 8px 32px rgba(0, 0, 0, 0.45);
+  --transition:  0.2s ease;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 40% at 20% 0%,   rgba(156, 176, 128, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(43, 87, 72, 0.06)  0%, transparent 60%);
+  background-attachment: fixed;
+  font-family: 'Poppins', system-ui, sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+}
+
+/* ---------- App Wrapper ---------- */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  background: linear-gradient(135deg, #1c2427 0%, #273338 50%, #1c2427 100%);
+  border-bottom: 1px solid rgba(156, 176, 128, 0.25);
+  padding: 1.25rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  backdrop-filter: blur(12px);
+}
+
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #9cb080, #618764, #b8cba0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.header-subtitle {
+  color: var(--text-2);
+  font-size: 0.8rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* ---------- Main Container ---------- */
+.main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 4rem;
+  width: 100%;
+  flex: 1;
+}
+
+/* ---------- Tabs ---------- */
+.tab-content-wrapper {
+  margin-top: 2rem;
+}
+
+/* ---------- Section ---------- */
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-icon { font-size: 1.3rem; }
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color var(--transition), box-shadow var(--transition),
+              background var(--transition);
+  backdrop-filter: blur(8px);
+}
+
+.card:hover {
+  border-color: var(--border-gold);
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Match Cards (jogos do dia / jogos de hoje) ---------- */
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.match-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.match-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.match-card:hover {
+  border-color: var(--border-gold);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.match-card:hover::before { opacity: 1; }
+
+.match-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.group-badge {
+  background: var(--gold-dim);
+  color: var(--gold);
+  border: 1px solid rgba(245,166,35,0.3);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.match-time {
+  color: var(--text-2);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.match-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.team-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.team-code {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 1px;
+}
+
+.team-name {
+  font-size: 0.7rem;
+  color: var(--text-2);
+  text-align: center;
+  font-weight: 400;
+}
+
+.match-vs-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.match-vs {
+  color: var(--text-3);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.match-score-real {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+
+/* ---------- Stat Cards (por_pessoa summary) ---------- */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  transition: all var(--transition);
+}
+
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+.stat-card--gold  { border-color: var(--gold-dim);  }
+.stat-card--green { border-color: var(--green-bg); }
+.stat-card--amber { border-color: var(--amber-bg); }
+.stat-card--red   { border-color: var(--red-bg);   }
+.stat-card--gray  { border-color: var(--gray-bg);  }
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-card--gold  .stat-value { color: var(--gold);  }
+.stat-card--green .stat-value { color: var(--green); }
+.stat-card--amber .stat-value { color: var(--amber); }
+.stat-card--red   .stat-value { color: var(--red);   }
+.stat-card--gray  .stat-value { color: var(--gray);  }
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-2);
+  font-weight: 500;
+  margin-top: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ---------- Score Badges ---------- */
+.score-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-exato     { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bd); }
+.badge-resultado { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+.badge-erro      { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-bd);   }
+.badge-pendente  { background: var(--gray-bg);  color: var(--gray);  border: 1px solid var(--gray-bd);  }
+
+/* ---------- Ranking Table ---------- */
+.ranking-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.ranking-table thead tr {
+  background: var(--gold-dim);
+  border-bottom: 1px solid var(--border-gold);
+}
+
+.ranking-table th {
+  padding: 0.9rem 1.1rem;
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
+
+.ranking-table td {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+
+.ranking-table tbody tr {
+  transition: background var(--transition);
+}
+
+.ranking-table tbody tr:hover {
+  background: var(--bg-card-hover);
+}
+
+.ranking-table tbody tr:last-child td { border-bottom: none; }
+
+.rank-pos { color: var(--text-2); font-weight: 600; font-size: 0.85rem; }
+.rank-medal { font-size: 1.1rem; }
+.rank-name { font-weight: 600; color: var(--text); }
+
+.rank-pts {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.rank-cell { font-weight: 500; text-align: center; }
+.rank-cell--green { color: var(--green); }
+.rank-cell--amber { color: var(--amber); }
+.rank-cell--red   { color: var(--red);   }
+.rank-cell--gray  { color: var(--gray);  }
+
+/* Row highlighting for top 3 */
+.rank-row-1 { background: rgba(156, 176, 128, 0.08) !important; }
+.rank-row-2 { background: rgba(97, 135, 100, 0.06) !important; }
+.rank-row-3 { background: rgba(43, 87, 72, 0.06) !important; }
+
+/* ---------- Palpites Table (per match / per day) ---------- */
+.palpites-table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.palpites-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.palpites-table th {
+  padding: 0.65rem 1rem;
+  color: var(--text-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.palpites-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  vertical-align: middle;
+}
+
+.palpites-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+.palpites-table tbody tr:last-child td { border-bottom: none; }
+
+.palpite-score {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+/* ---------- Day Ranking (mini-tabela) ---------- */
+.day-ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.day-ranking-pos  { color: var(--text-3); font-weight: 700; width: 24px; text-align: right; }
+.day-ranking-name { flex: 1; font-weight: 600; }
+.day-ranking-pts  { font-weight: 800; color: var(--gold); }
+
+/* ---------- Dropdowns & Selects (Dash/Radix Components) ---------- */
+.dash-dropdown {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  height: 38px !important;
+  line-height: 22px !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.dash-dropdown:hover {
+  background: var(--bg-card-hover) !important;
+  border-color: var(--gold-light) !important;
+}
+
+/* Dropdown Options Container / Menu */
+.dash-dropdown-content {
+  background: var(--bg-2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  box-shadow: var(--shadow) !important;
+  padding: 0.5rem !important;
+  z-index: 9999 !important;
+}
+
+/* Dropdown Search Input */
+.dash-dropdown-search {
+  background: var(--bg) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  border-radius: 4px !important;
+  padding: 0.4rem 0.75rem !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.85rem !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.dash-dropdown-search:focus {
+  outline: none !important;
+  border-color: var(--gold) !important;
+}
+
+/* Dropdown Individual Option */
+.dash-dropdown-option,
+.dash-options-list-option {
+  background: transparent !important;
+  color: var(--text-2) !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.85rem !important;
+  padding: 0.4rem 0.75rem !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.dash-dropdown-option:hover,
+.dash-options-list-option:hover,
+.dash-dropdown-option[selected],
+.dash-options-list-option.selected {
+  background: var(--bg-card-hover) !important;
+  color: var(--gold) !important;
+}
+
+/* ---------- DatePicker Component ---------- */
+.SingleDatePickerInput,
+.SingleDatePickerInput__withBorder,
+.DateRangePickerInput,
+.DateRangePickerInput__withBorder {
+  background: var(--bg) !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  width: 200px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+}
+
+.SingleDatePickerInput *,
+.DateRangePickerInput * {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+.dash-datepicker-input,
+.DateInput,
+.DateInput_input {
+  border: none !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  padding: 0 !important;
+}
+
+.dash-datepicker-input:hover,
+.dash-datepicker-input:focus,
+.DateInput_input:hover,
+.DateInput_input:focus {
+  outline: none !important;
+  background: transparent !important;
+}
+
+/* Calendar Popover Dark Mode styling */
+.SingleDatePicker_picker,
+.DateRangePicker_picker,
+.DayPicker,
+.DayPicker__horizontal,
+.CalendarMonthGrid,
+.CalendarMonth,
+.DayPickerNavigation_button,
+.CalendarDay_container,
+.DayPicker_weekHeader {
+  background: var(--bg-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.CalendarDay {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.CalendarDay:hover {
+  background: var(--bg-card-hover) !important;
+  color: var(--gold) !important;
+}
+
+.CalendarDay__selected,
+.CalendarDay__selected:hover {
+  background: var(--gold) !important;
+  color: var(--bg) !important;
+  font-weight: 700 !important;
+}
+
+.CalendarDay__blocked_out_of_range,
+.CalendarDay__blocked_out_of_range:hover {
+  background: var(--bg) !important;
+  color: var(--text-3) !important;
+  opacity: 0.3 !important;
+}
+
+.DayPicker_weekHeader_li small {
+  color: var(--text-2) !important;
+}
+
+.CalendarMonth_caption strong {
+  color: var(--gold) !important;
+}
+
+
+
+/* ---------- Plotly Chart Container ---------- */
+.chart-wrapper {
+  margin-top: 1.5rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+/* ---------- Empty & Error States ---------- */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-2);
+}
+
+.empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.empty-text { font-size: 0.9rem; }
+
+.error-msg {
+  background: var(--red-bg);
+  border: 1px solid var(--red-bd);
+  color: var(--red);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+}
+
+/* ---------- Day Section Header ---------- */
+.day-match-section {
+  margin-bottom: 2rem;
+}
+
+.day-match-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-2);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border: 1px solid var(--border);
+  border-bottom: none;
+}
+
+.day-match-body {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  padding: 1.25rem;
+}
+
+/* ---------- Pill chip for result ---------- */
+.result-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--gold-dim);
+  border: 1px solid rgba(245,166,35,0.3);
+  color: var(--gold);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.result-chip--pending {
+  background: var(--gray-bg);
+  border-color: var(--gray-bd);
+  color: var(--gray);
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+/* ---------- Navegação Cruzada — Elementos Clicáveis ---------- */
+
+/* Match card clicável (navega para Por Jogo) */
+.match-card--nav {
+  cursor: pointer;
+  user-select: none;
+}
+
+.match-card--nav:hover {
+  border-color: rgba(245,166,35,0.6);
+  background: rgba(245, 166, 35, 0.06);
+  box-shadow: 0 0 0 1px rgba(245,166,35,0.2), var(--shadow);
+  transform: translateY(-3px);
+}
+
+/* Tooltip "⚽ Ver detalhes →" */
+.nav-hint {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gold);
+  text-align: right;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s, transform 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.match-card--nav:hover .nav-hint {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Linha do ranking clicável (navega para Por Pessoa) */
+.rank-row--nav {
+  cursor: pointer;
+}
+
+.rank-row--nav:hover td {
+  background: rgba(245, 166, 35, 0.05) !important;
+}
+
+.rank-row--nav:hover .rank-name {
+  color: var(--gold-light) !important;
+}
+
+/* Ícone 👤 visível apenas no hover da linha */
+.nav-row-hint {
+  display: inline-block;
+  margin-left: 0.4rem;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+  vertical-align: middle;
+}
+
+.rank-row--nav:hover .nav-row-hint {
+  opacity: 1;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .app-header    { padding: 1rem; }
+  .main-container{ padding: 1rem 1rem 3rem; }
+  .header-title  { font-size: 1.15rem; }
+  .header-trophy { font-size: 1.8rem; }
+  .matches-grid  { grid-template-columns: 1fr; }
+  .stats-row     { grid-template-columns: repeat(3, 1fr); }
+}
