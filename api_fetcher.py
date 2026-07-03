@@ -187,24 +187,45 @@ def fetch_and_store_results(dim_jogos):
             away_score = int(as_) if as_ is not None and str(as_).isdigit() else None
 
             # Placar dos 90 minutos (tempo regulamentar)
-            # Para jogos sem prorrogacao, e igual ao placar final.
-            # Para jogos com prorrogacao, calculamos a partir dos scorers.
+            # Na fase de grupos: NUNCA ha prorrogacao -> score_home_90 = score_home sempre.
+            # No mata-mata (r32, r16, qf, sf, f): pode haver prorrogacao.
+            #   - Jogo em andamento (IN_PLAY): usar placar atual (acrescimos nao sao ET).
+            #   - Jogo finalizado (FINISHED): calcular pelo scorer, descontando gols > 90min.
+            #   Atencao: a API as vezes omite scorers (dados incompletos), por isso
+            #   so ajustamos se o placar final DIFERE do contado nos scorers E o jogo
+            #   e de fato um mata-mata finalizado.
             home_hs = g.get("home_scorers")
             away_hs = g.get("away_scorers")
+            game_type = str(g.get("type", "")).strip().lower()
+            is_knockout_type = game_type in ("r32", "r16", "qf", "sf", "f", "final")
 
             if home_score is not None and away_score is not None:
-                if status == "FINISHED":
-                    # Jogo encerrado: calcular gols ate 90min pelo scorer
+                if is_knockout_type and status == "FINISHED":
+                    # Mata-mata finalizado: calcular gols ate 90min pelo scorer
                     h90 = _count_rt_goals(home_hs)
                     a90 = _count_rt_goals(away_hs)
                     # Sanidade: sem dados de scorers -> assume sem prorrogacao
                     all_scorers = str(home_hs) + str(away_hs)
                     if h90 == 0 and a90 == 0 and '"' not in all_scorers:
                         h90, a90 = home_score, away_score
+                    # Sanidade extra: se scorers incompletos (count < score), confiar no placar
+                    # Ex: COD marcou 3 mas API lista apenas 2 scorers -> nao penalizar
+                    # Nesse caso, so aplicar reducao se h90 < home_score (houve ET)
+                    # e a diferenca for justificada (pelo menos 1 scorer > 90 min)
+                    elif h90 == home_score and a90 == away_score:
+                        # Nenhum gol foi descartado: placar 90min = placar final (sem ET)
+                        pass
+                    else:
+                        # Verificar se realmente houve gols no ET (scorer > 90min existe)
+                        all_goals = __import__('re').findall(r'"([^"]+)"', str(home_hs) + str(away_hs))
+                        has_et_goal = any(_parse_goal_minute(g_str) > 90 for g_str in all_goals)
+                        if not has_et_goal:
+                            # Scorers incompletos mas sem gols de ET confirmados
+                            # -> nao alterar placar (confiar no placar final da API)
+                            h90, a90 = home_score, away_score
                 else:
-                    # Jogo em andamento (IN_PLAY/PAUSED): usar placar atual diretamente.
-                    # Acrescimos do 2o tempo (92', 94'...) NAO sao prorrogacao!
-                    # O ajuste de ET so faz sentido em jogos FINALIZADOS.
+                    # Fase de grupos (nunca ha ET) ou jogo em andamento:
+                    # usar placar atual diretamente
                     h90, a90 = home_score, away_score
             else:
                 h90, a90 = None, None
