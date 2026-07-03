@@ -768,3 +768,133 @@ body {
   .matches-grid  { grid-template-columns: 1fr; }
   .stats-row     { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ---------- Mata-Mata — Knockout Cards ---------- */
+
+.ko-matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ko-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ko-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.ko-card:hover {
+  border-color: var(--border-gold);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+  background: var(--bg-card-hover);
+}
+
+.ko-card:hover::before { opacity: 1; }
+
+.ko-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.ko-match-num {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ko-score {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ko-score--pending {
+  font-size: 0.8rem;
+  color: var(--gray);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.ko-teams-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ko-team {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .ko-matches-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- Mata-Mata — Fase Filter Bar ---------- */
+
+.fase-filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(13, 20, 33, 0.6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+}
+
+.fase-btn {
+  padding: 0.4rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+  background: transparent;
+  color: var(--text-2);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  letter-spacing: 0.02em;
+}
+
+.fase-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(156, 176, 128, 0.08);
+}
+
+.fase-btn--active {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, rgba(156,176,128,0.25), rgba(212,193,118,0.15));
+  color: var(--gold);
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(156,176,128,0.2);
+}
+
+

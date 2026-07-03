@@ -80,6 +80,8 @@ app.layout = dmc.MantineProvider(
                 children=[
                     dcc.Tab(label="Ranking Geral", value="ranking",
                             style=TAB_STYLE, selected_style=TAB_SELECTED_STYLE),
+                    dcc.Tab(label="Mata-Mata",     value="mata_mata",
+                            style=TAB_STYLE, selected_style=TAB_SELECTED_STYLE),
                     dcc.Tab(label="Por Dia",        value="por_dia",
                             style=TAB_STYLE, selected_style=TAB_SELECTED_STYLE),
                     dcc.Tab(label="Por Jogo",       value="por_jogo",
@@ -115,7 +117,7 @@ app.layout = dmc.MantineProvider(
 
 
 # ── Callback de roteamento das abas ───────────────────────────────────────────
-from pages import ranking, por_dia, por_jogo, por_pessoa
+from pages import ranking, por_dia, por_jogo, por_pessoa, mata_mata
 
 
 @app.callback(
@@ -127,6 +129,8 @@ def render_tab(tab, nav_data):
     nav = nav_data or {}
     if tab == "ranking":
         return ranking.layout()
+    if tab == "mata_mata":
+        return mata_mata.layout()
     if tab == "por_dia":
         return por_dia.layout()
     if tab == "por_jogo":
@@ -188,6 +192,7 @@ def switch_tab_on_nav(nav_data):
 
 # ── Registrar callbacks das páginas ───────────────────────────────────────────
 ranking.register_callbacks(app)
+mata_mata.register_callbacks(app)
 por_dia.register_callbacks(app)
 por_jogo.register_callbacks(app)
 por_pessoa.register_callbacks(app)

@@ -9,6 +9,15 @@ from data_manager import get_full_df, get_bolao_data
 from scoring import label_pontos, cor_pontos
 from teams import flag_span
 
+# Mapeamento de codigo de fase para exibicao
+_FASE_LABEL = {
+    "R32": "16-avos", "R16": "Oitavas",
+    "QF":  "Quartas",  "SF":  "Semi",  "F": "Final",
+}
+
+def _grupo_label(grupo: str) -> str:
+    return _FASE_LABEL.get(str(grupo).upper(), str(grupo))
+
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -30,7 +39,7 @@ def _match_card(row):
 
     return html.Div([
         html.Div([
-            html.Span(str(row.get("grupo", "")), className="group-badge"),
+            html.Span(_grupo_label(str(row.get("grupo", ""))), className="group-badge"),
             html.Span(time_display, className="match-time", style=time_style),
         ], className="match-card-top"),
 

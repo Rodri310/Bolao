@@ -10,6 +10,13 @@ from data_manager import get_full_df
 from scoring import label_pontos, cor_pontos
 from teams import flag_span
 
+_FASE_LABEL = {
+    "R32": "16-avos", "R16": "Oitavas",
+    "QF":  "Quartas",  "SF":  "Semi",  "F": "Final",
+}
+def _grupo_label(grupo: str) -> str:
+    return _FASE_LABEL.get(str(grupo).upper(), str(grupo))
+
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -104,7 +111,7 @@ def _build_match_content(match_id: str):
 
     match_card = html.Div([
         html.Div([
-            html.Span(str(m.get("grupo", "")), className="group-badge"),
+            html.Span(_grupo_label(str(m.get("grupo", ""))), className="group-badge"),
             html.Span(data_fmt, style={"color": "#64748b", "fontSize": "0.8rem"}),
             html.Span(time_display, style=time_style),
         ], style={"display": "flex", "alignItems": "center", "gap": "0.75rem", "marginBottom": "1.25rem"}),
@@ -200,7 +207,11 @@ def layout(initial_match=None):
                 row["data_dt"].strftime("%d/%m")
                 if pd.notna(row.get("data_dt")) else ""
             )
-            label = f"{row.get('mandante_sigla','?')} × {row.get('visitante_sigla','?')}  |  {row.get('grupo','')}  |  {data_fmt}"
+            label = (
+                f"{row.get('mandante_sigla','?')} × {row.get('visitante_sigla','?')}"
+                f"  |  {_grupo_label(str(row.get('grupo','')))}"
+                f"  |  {data_fmt}"
+            )
             options.append({"label": label, "value": str(row["match_id"])})
 
         if options and default is None:

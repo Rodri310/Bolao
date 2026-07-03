@@ -10,6 +10,13 @@ from data_manager import get_full_df
 from scoring import label_pontos, cor_pontos
 from teams import flag_span
 
+_FASE_LABEL = {
+    "R32": "16-avos", "R16": "Oitavas",
+    "QF":  "Quartas",  "SF":  "Semi",  "F": "Final",
+}
+def _grupo_label(grupo: str) -> str:
+    return _FASE_LABEL.get(str(grupo).upper(), str(grupo))
+
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -45,7 +52,7 @@ def _match_section(match_row, df_palpites):
 
     header = html.Div([
         html.Div([
-            html.Span(str(grupo), className="group-badge"),
+            html.Span(_grupo_label(str(grupo)), className="group-badge"),
             html.Div([
                 flag_span(mandante_sigla, "1.1rem"),
                 html.Span(mandante_sigla,  style={"fontWeight": "700", "color": "#e2e8f0"}),

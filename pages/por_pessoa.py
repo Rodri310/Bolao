@@ -9,6 +9,13 @@ from data_manager import get_full_df
 from scoring import label_pontos, cor_pontos
 from teams import flag_span
 
+_FASE_LABEL = {
+    "R32": "16-avos", "R16": "Oitavas",
+    "QF":  "Quartas",  "SF":  "Semi",  "F": "Final",
+}
+def _grupo_label(grupo: str) -> str:
+    return _FASE_LABEL.get(str(grupo).upper(), str(grupo))
+
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -78,7 +85,7 @@ def _palpites_table(df_pessoa: pd.DataFrame):
                 ], style={"display": "flex", "alignItems": "center", "fontWeight": "700", "fontSize": "0.85rem"}),
                 html.Div(jogo_completo, style={"color": "#64748b", "fontSize": "0.72rem", "marginTop": "0.25rem"}),
             ]),
-            html.Td(str(p.get("grupo", "")),
+            html.Td(_grupo_label(str(p.get("grupo", ""))),
                     style={"color": "#94a3b8", "fontSize": "0.8rem"}),
             html.Td(palpite, className="palpite-score"),
             html.Td(result_cell),

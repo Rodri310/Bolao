@@ -5,6 +5,7 @@ Chamado pelo APScheduler a cada 5 minutos.
 Fallback: worldcup26.ir (open-source, gratuito, Copa 2026).
 """
 import os
+import re
 import logging
 import requests
 from dotenv import load_dotenv
@@ -103,7 +104,41 @@ FALLBACK_NAME_MAP = {
     "united states": "USA",
     "uruguay": "URU",
     "uzbekistan": "UZB",
+    # Fases eliminatórias — nomes adicionais que podem aparecer
+    "australia": "AUS",
+    "costa rica": "CRC",
+    "democratic republic of congo": "COD",
+    "republic of congo": "CGO",
+    "cape verde islands": "CPV",
 }
+
+
+# ---------------------------------------------------------------------------
+# Helpers de placar de tempo regulamentar (90 minutos)
+# ---------------------------------------------------------------------------
+
+def _parse_goal_minute(goal_str: str) -> int:
+    """
+    Extrai o minuto principal de uma string de gol.
+    Exemplos:
+      'Tielemans 125(P)\''  -> 125  (prorrogacao)
+      'Lukaku 86\''          -> 86   (tempo normal)
+      'Diop 90+1\''          -> 90   (acrescimos do 2o tempo = tempo normal)
+      'Gabriel 90+5\''       -> 90   (acrescimos = tempo normal)
+    """
+    m = re.search(r'(\d+)(?:\+\d+)?\s*(?:\([^)]*\))?\s*\'', goal_str)
+    return int(m.group(1)) if m else 0
+
+
+def _count_rt_goals(scorers_str) -> int:
+    """
+    Conta gols marcados em tempo regulamentar (<= 90 min, incluindo acrescimos).
+    scorers_str: string JSON-like do estilo '{"Nome 56\'","Nome 90+2\'"}'.
+    """
+    if not scorers_str or str(scorers_str).strip().lower() in ('null', '', 'none'):
+        return 0
+    goals = re.findall(r'"([^"]+)"', str(scorers_str))
+    return sum(1 for g in goals if _parse_goal_minute(g) <= 90)
 
 
 def fetch_and_store_results(dim_jogos):
@@ -130,37 +165,57 @@ def fetch_and_store_results(dim_jogos):
         for g in games:
             home_name = str(g.get("home_team_name_en", "")).strip().lower()
             away_name = str(g.get("away_team_name_en", "")).strip().lower()
-            
+
             home_tla = FALLBACK_NAME_MAP.get(home_name, "")
             away_tla = FALLBACK_NAME_MAP.get(away_name, "")
-            
-            # Map status
-            finished = str(g.get("finished", "")).strip().upper()
+
+            # Status
+            finished     = str(g.get("finished", "")).strip().upper()
             time_elapsed = str(g.get("time_elapsed", "")).strip().lower()
-            
+
             if finished == "TRUE":
                 status = "FINISHED"
             elif time_elapsed == "live" or (time_elapsed.isdigit() and int(time_elapsed) > 0):
                 status = "IN_PLAY"
             else:
                 status = "SCHEDULED"
-                
-            # Parse scores
-            hs = g.get("home_score")
+
+            # Placar final
+            hs  = g.get("home_score")
             as_ = g.get("away_score")
-            
-            home_score = int(hs) if hs is not None and str(hs).isdigit() else None
+            home_score = int(hs)  if hs  is not None and str(hs).isdigit()  else None
             away_score = int(as_) if as_ is not None and str(as_).isdigit() else None
-            
+
+            # Placar dos 90 minutos (tempo regulamentar)
+            # Para jogos sem prorrogacao, e igual ao placar final.
+            # Para jogos com prorrogacao, calculamos a partir dos scorers.
+            home_hs = g.get("home_scorers")
+            away_hs = g.get("away_scorers")
+
+            if home_score is not None and away_score is not None:
+                if status == "FINISHED":
+                    # Jogo encerrado: calcular gols ate 90min pelo scorer
+                    h90 = _count_rt_goals(home_hs)
+                    a90 = _count_rt_goals(away_hs)
+                    # Sanidade: sem dados de scorers -> assume sem prorrogacao
+                    all_scorers = str(home_hs) + str(away_hs)
+                    if h90 == 0 and a90 == 0 and '"' not in all_scorers:
+                        h90, a90 = home_score, away_score
+                else:
+                    # Jogo em andamento (IN_PLAY/PAUSED): usar placar atual diretamente.
+                    # Acrescimos do 2o tempo (92', 94'...) NAO sao prorrogacao!
+                    # O ajuste de ET so faz sentido em jogos FINALIZADOS.
+                    h90, a90 = home_score, away_score
+            else:
+                h90, a90 = None, None
+
             matches_fmt.append({
-                "status": status,
-                "homeTeam": {"tla": home_tla},
-                "awayTeam": {"tla": away_tla},
+                "status":    status,
+                "homeTeam":  {"tla": home_tla},
+                "awayTeam":  {"tla": away_tla},
                 "score": {
-                    "fullTime": {
-                        "home": home_score,
-                        "away": away_score,
-                    }
+                    "fullTime":      {"home": home_score, "away": away_score},
+                    "regularTime":   {"home": h90,        "away": a90},
                 },
             })
         
@@ -185,16 +240,23 @@ def _process_matches(matches: list, lookup: dict):
 
         match_id = lookup.get((home_tla, away_tla))
         if not match_id:
-            logger.debug("Sem correspondência: %s x %s", home_tla, away_tla)
+            logger.debug("Sem correspondencia: %s x %s", home_tla, away_tla)
             continue
 
-        score  = m.get("score", {})
-        ft     = score.get("fullTime", {})
-        sh     = ft.get("home")
-        sa     = ft.get("away")
+        score = m.get("score", {})
+        ft    = score.get("fullTime",    {})
+        rt    = score.get("regularTime", {})
+
+        sh = ft.get("home")
+        sa = ft.get("away")
+        # Placar 90 min: usa regularTime se disponivel, senao usa fullTime
+        sh90 = rt.get("home") if rt.get("home") is not None else sh
+        sa90 = rt.get("away") if rt.get("away") is not None else sa
 
         if sh is not None and sa is not None:
-            save_result(match_id, int(sh), int(sa), status)
+            save_result(match_id, int(sh), int(sa), status,
+                        score_home_90=int(sh90) if sh90 is not None else None,
+                        score_away_90=int(sa90) if sa90 is not None else None)
             stored += 1
 
     logger.info("Resultados armazenados/atualizados: %d", stored)
