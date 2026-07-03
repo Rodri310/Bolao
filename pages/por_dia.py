@@ -176,7 +176,7 @@ def layout():
         if dates:
             min_date = str(dates[0])
             max_date = str(dates[-1])
-            hoje     = pd.Timestamp.now().normalize().date()
+            hoje     = pd.Timestamp.now(tz="America/Sao_Paulo").normalize().date()
             default  = next((str(d) for d in dates if d >= hoje), str(dates[-1]))
 
     return html.Div([

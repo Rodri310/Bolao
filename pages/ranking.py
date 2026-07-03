@@ -133,8 +133,8 @@ def _build_content():
 
     df, dim_jogos, _ = result
 
-    # Jogos de Hoje
-    hoje       = pd.Timestamp.now().normalize().date()
+    # Jogos de Hoje — usar timezone de Brasilia (UTC-3) para evitar virada de dia errada
+    hoje       = pd.Timestamp.now(tz="America/Sao_Paulo").normalize().date()
     jogos_hoje = dim_jogos[dim_jogos["data_dt"].dt.date == hoje]
 
     if jogos_hoje.empty:
